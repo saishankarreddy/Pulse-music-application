@@ -53,7 +53,7 @@ pipeline {
         }
         stage('Check Kubectl') {
             steps {
-                 'kubectl config current-context'
+                bat 'kubectl config current-context'
                 bat 'kubectl get nodes'
             }
         }
