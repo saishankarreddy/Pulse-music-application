@@ -31,8 +31,8 @@ pipeline {
         }
         stage('Push Image') {
             steps {
-                bat 'docker tag pulse yourusername/pulse:latest'
-                bat 'docker push yourusername/pulse:latest'
+                bat 'docker tag pulse saishankarreddy/pulse:latest'
+                bat 'docker push saishankarreddy/pulse:latest'
             }
         }
     }
