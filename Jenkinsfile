@@ -29,5 +29,11 @@ pipeline {
                 bat 'docker run -d -p 8000:8000 --name pulse-container pulse'
             }
         }
+        stage('Push Image') {
+            steps {
+                bat 'docker tag pulse yourusername/pulse:latest'
+                bat 'docker push yourusername/pulse:latest'
+            }
+        }
     }
 }
