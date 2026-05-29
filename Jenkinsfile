@@ -15,6 +15,25 @@ pipeline {
             }
         }
 
+        stage('Docker Login') {
+            steps {
+                withCredentials([usernamePassword(
+                    credentialsId: 'dockerhub',
+                    usernameVariable: 'DOCKER_USER',
+                    passwordVariable: 'DOCKER_PASS'
+                )]) {
+                    bat 'docker login -u %DOCKER_USER% -p %DOCKER_PASS%'
+                }
+            }
+        }
+
+        stage('Push Image') {
+            steps {
+                bat 'docker tag pulse saishankarreddy/pulse:latest'
+                bat 'docker push saishankarreddy/pulse:latest'
+            }
+        }
+
         stage('Stop Old Container') {
             steps {
                 bat '''
@@ -24,26 +43,12 @@ pipeline {
             }
         }
 
-        stage('Run New Container') {
+        stage('Deploy From Docker Hub') {
             steps {
-                bat 'docker run -d -p 8000:8000 --name pulse-container pulse'
-            }
-        }
-        stage('Docker Login') {
-            steps {
-                withCredentials([usernamePassword(
-                    credentialsId: 'dockerhub',
-                    usernameVariable: 'DOCKER_USER',
-                    passwordVariable: 'DOCKER_PASS'
-        )]) {
-            bat 'docker login -u %DOCKER_USER% -p %DOCKER_PASS%'
-                }
-            }
-        }
-        stage('Push Image') {
-            steps {
-                bat 'docker tag pulse saishankarreddy/pulse:latest'
-                bat 'docker push saishankarreddy/pulse:latest'
+                bat '''
+                docker pull saishankarreddy/pulse:latest
+                docker run -d -p 8000:8000 --name pulse-container saishankarreddy/pulse:latest
+                '''
             }
         }
     }
