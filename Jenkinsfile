@@ -51,6 +51,12 @@ pipeline {
                 '''
             }
         }
+        stage('Check Kubectl') {
+            steps {
+                 'kubectl config current-context'
+                bat 'kubectl get nodes'
+            }
+        }
         stage('Deploy to Kubernetes') {
             steps {
                 bat 'kubectl apply -f k8s/'
