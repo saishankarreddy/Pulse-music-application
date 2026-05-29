@@ -51,12 +51,9 @@ pipeline {
                 '''
             }
         }
-        stage('Check Kubectl') {
-            steps {
-                bat 'set KUBECONFIG=C:\\Users\\DELL\\.kube\\config'
-                bat 'kubectl config current-context'
-                bat 'kubectl get nodes'
-            }
+        withEnv(['KUBECONFIG=C:\\Users\\DELL\\.kube\\config']) {
+            bat 'kubectl config current-context'
+            bat 'kubectl get nodes'
         }
         stage('Deploy to Kubernetes') {
             steps {
