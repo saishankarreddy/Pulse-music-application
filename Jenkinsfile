@@ -53,6 +53,7 @@ pipeline {
         }
         stage('Check Kubectl') {
             steps {
+                bat set KUBECONFIG=C:\\Users\\DELL\\.kube\\config
                 bat 'kubectl config current-context'
                 bat 'kubectl get nodes'
             }
