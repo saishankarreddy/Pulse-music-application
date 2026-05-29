@@ -51,18 +51,31 @@ pipeline {
                 '''
             }
         }
-        stage('Check Kubectl') {
+
+        stage('Check Kubernetes Connection') {
             steps {
-                bat '''
-                    set KUBECONFIG=C:\\Users\\DELL\\.kube\\config
-                    kubectl config current-context
-                    kubectl get nodes
-                '''
+                withEnv(['KUBECONFIG=C:\\Users\\DELL\\.kube\\config']) {
+                    bat 'kubectl config current-context'
+                    bat 'kubectl get nodes'
+                }
             }
         }
+
         stage('Deploy to Kubernetes') {
             steps {
-                bat 'kubectl apply -f k8s/'
+                withEnv(['KUBECONFIG=C:\\Users\\DELL\\.kube\\config']) {
+                    bat 'kubectl apply -f k8s'
+                }
+            }
+        }
+
+        stage('Verify Deployment') {
+            steps {
+                withEnv(['KUBECONFIG=C:\\Users\\DELL\\.kube\\config']) {
+                    bat 'kubectl get deployments'
+                    bat 'kubectl get pods'
+                    bat 'kubectl get svc'
+                }
             }
         }
     }
